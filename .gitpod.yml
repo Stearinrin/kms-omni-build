@@ -13,10 +13,11 @@ github:
 # Commands to start on workspace startup
 tasks:
   - before: git submodule update --init --recursive
-            git submodule update --remote 
-            REF=master
-            git checkout "$REF" || true \
-            git submodule foreach "git checkout $REF || true"
+  - before: git submodule update --remote 
+  - env: 
+      REF: master
+    before: git checkout "$REF" || true
+  - before:  git submodule foreach "git checkout $REF || true"
   - command: sudo ./bin/kms-build-run.sh --dbg
 ports:
   - port: 8433
