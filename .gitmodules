@@ -1,48 +1,64 @@
 [submodule "kurento-module-creator"]
+	url = https://github.com/Kurento/kurento-module-creator
 	path = kurento-module-creator
-	url = ../kurento-module-creator
+	
 [submodule "kurento-maven-plugin"]
+	url = https://github.com/Kurento/kurento-maven-plugin
 	path = kurento-maven-plugin
-	url = ../kurento-maven-plugin
+	
 [submodule "kms-cmake-utils"]
+	url = https://github.com/Kurento/kms-cmake-utils
 	path = kms-cmake-utils
-	url = ../kms-cmake-utils
+	
 [submodule "kms-jsonrpc"]
+	url = https://github.com/Kurento/kms-jsonrpc
 	path = kms-jsonrpc
-	url = ../kms-jsonrpc
+	
 [submodule "kms-core"]
+	url = https://github.com/Kurento/kms-core
 	path = kms-core
-	url = ../kms-core
+	
 [submodule "kms-elements"]
+	url = https://github.com/Kurento/kms-elements
 	path = kms-elements
-	url = ../kms-elements
+	
 [submodule "kms-filters"]
+	url = https://github.com/Kurento/kms-filters
 	path = kms-filters
-	url = ../kms-filters
+	
 [submodule "kurento-media-server"]
+	url = https://github.com/Kurento/kurento-media-server
 	path = kurento-media-server
-	url = ../kurento-media-server
+	
 [submodule "module/kms-chroma"]
+	url = https://github.com/Kurento/kms-chroma
 	path = module/kms-chroma
-	url = ../kms-chroma
+	
 [submodule "module/kms-crowddetector"]
+	url = https://github.com/Kurento/kms-crowddetector
 	path = module/kms-crowddetector
-	url = ../kms-crowddetector
+	
 [submodule "module/kms-datachannelexample"]
+	url = https://github.com/Kurento/kms-datachannelexample
 	path = module/kms-datachannelexample
-	url = ../kms-datachannelexample
+	
 [submodule "module/kms-markerdetector"]
+	url = https://github.com/Kurento/kms-markerdetector
 	path = module/kms-markerdetector
-	url = ../kms-markerdetector
+	
 [submodule "module/kms-opencv-plugin-sample"]
+	url = https://github.com/Kurento/kms-opencv-plugin-sample
 	path = module/kms-opencv-plugin-sample
-	url = ../kms-opencv-plugin-sample
+	
 [submodule "module/kms-platedetector"]
+	url = https://github.com/Kurento/kms-platedetector
 	path = module/kms-platedetector
-	url = ../kms-platedetector
+	
 [submodule "module/kms-plugin-sample"]
+	url = https://github.com/Kurento/kms-plugin-sample
 	path = module/kms-plugin-sample
-	url = ../kms-plugin-sample
+	
 [submodule "module/kms-pointerdetector"]
+	url = https://github.com/Kurento/kms-pointerdetector
 	path = module/kms-pointerdetector
-	url = ../kms-pointerdetector
+	
