@@ -1,0 +1,24 @@
+image:
+  file: .gitpod.Dockerfile
+# GitHub
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: false
+    addComment: false
+    addBadge: true
+# Commands to start on workspace startup
+tasks:
+  - before: git submodule update --init --recursive
+            git submodule update --remote 
+            REF=master
+            git checkout "$REF" || true \
+            git submodule foreach "git checkout $REF || true"
+  - command: sudo ./bin/kms-build-run.sh --dbg
+ports:
+  - port: 8433
+    onOpen: open-preview
+  - port: 8888
