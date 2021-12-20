@@ -1,12 +1,10 @@
-FROM buildpack-deps:bionic
+FROM buildpack-deps:xenial
 
 ### base ###
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN yes | unminimize 
-
 # Set a runlevel to avoid invoke-rc.d warnings
-# http://manpages.ubuntu.com/manpages/focal/man8/runlevel.8.html#environment
+# http://manpages.ubuntu.com/manpages/xenial/man8/runlevel.8.html#environment
 # shellcheck disable=SC2034
 ARG RUNLEVEL=1
 
@@ -27,6 +25,9 @@ RUN apt-get install -yq --no-install-recommends \
         build-essential \
         ninja-build \
         htop \
+        cmake \
+        ca-certificates \
+        gnupg \
         jq \
         less \
         locales \
@@ -51,6 +52,7 @@ ENV LANG=en_US.UTF-8
 
 ### Git ###
 RUN add-apt-repository -y ppa:git-core/ppa \
+    && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
     && apt-get install -yq --no-install-recommends git git-lfs
 
 ### Gitpod user ###
@@ -84,7 +86,8 @@ USER root
 ENV TRIGGER_REBUILD=3
 RUN curl -o /var/lib/apt/dazzle-marks/llvm.gpg -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key \
     && apt-key add /var/lib/apt/dazzle-marks/llvm.gpg \
-    && echo "deb https://apt.llvm.org/focal/ llvm-toolchain-focal main" >> /etc/apt/sources.list.d/llvm.list \
+    && echo "deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/llvm.list \
+    && sudo apt update \
     && sudo apt install -yq --no-install-recommends \
         clang \
         clang-format \
@@ -92,87 +95,27 @@ RUN curl -o /var/lib/apt/dazzle-marks/llvm.gpg -fsSL https://apt.llvm.org/llvm-s
         gdb \
         lld
 
-### Docker ###
-LABEL dazzle/layer=tool-docker
-LABEL dazzle/test=tests/tool-docker.yaml
-USER root
-ENV TRIGGER_REBUILD=3
-# https://docs.docker.com/engine/install/ubuntu/
-RUN curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.com/linux/ubuntu/gpg \
-    && apt-key add /var/lib/apt/dazzle-marks/docker.gpg \
-    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-    && sudo apt install -yq --no-install-recommends docker-ce docker-ce-cli containerd.io
-
-RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.12/slirp4netns-$(uname -m) \
-    && chmod +x /usr/bin/slirp4netns
-
-RUN curl -o /usr/local/bin/docker-compose -fsSL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64 \
-    && chmod +x /usr/local/bin/docker-compose
-
 # https://github.com/wagoodman/dive
 RUN curl -o /tmp/dive.deb -fsSL https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb \
     && apt install /tmp/dive.deb \
     && rm /tmp/dive.deb
 
-### Install Tailscale ###
-LABEL dazzle/layer=tool-tailscale
-LABEL dazzle/test=tests/tool-tailscale.yaml
-USER root
-# Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
-ENV TRIGGER_REBUILD=1
-
-RUN curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.gpg | sudo apt-key add - \
-    && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.list | sudo tee /etc/apt/sources.list.d/tailscale.list \
-    && apt-get update \
-    && apt-get install -y tailscale
-
-### Install nix ###
-LABEL dazzle/layer=tool-nix
-LABEL dazzle/test=tests/tool-nix.yaml
-ENV NIX_VERSION=2.3.14
-# Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
-ENV TRIGGER_REBUILD=1
-
-USER root
-RUN addgroup --system nixbld \
-  && adduser gitpod nixbld \
-  && for i in $(seq 1 30); do useradd -ms /bin/bash nixbld$i && adduser nixbld$i nixbld; done \
-  && mkdir -m 0755 /nix && chown gitpod /nix \
-  && mkdir -p /etc/nix && echo 'sandbox = false' > /etc/nix/nix.conf
-
-# Install Nix
-USER gitpod
-ENV USER gitpod
-WORKDIR /home/gitpod
-
-RUN curl https://nixos.org/releases/nix/nix-$NIX_VERSION/install | sh
-
-RUN echo '. /home/gitpod/.nix-profile/etc/profile.d/nix.sh' >> /home/gitpod/.bashrc
-RUN mkdir -p /home/gitpod/.config/nixpkgs && echo '{ allowUnfree = true; }' >> /home/gitpod/.config/nixpkgs/config.nix
-
-# Install cachix
-RUN . /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
-  && nix-env -iA cachix -f https://cachix.org/api/v1/install \
-  && cachix use cachix
-
 # share env see https://github.com/gitpod-io/workspace-images/issues/472
 RUN echo "PATH="${PATH}"" | sudo tee /etc/environment
 
 USER root
-ENV MAKEFLAGS="-j$(nproc)"
 
 # Import the Kurento repository signing key
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5AFA7A83
 
 # Get Ubuntu version definitions
-ENV DISTRIB_CODENAME=bionic
+ENV DISTRIB_CODENAME=xenial
 
 # Add the repository to Apt
 RUN echo "deb [arch=amd64] http://ubuntu.openvidu.io/dev $DISTRIB_CODENAME kms6" >> /etc/apt/sources.list.d/kurento.list
 
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends \
-        libssl1.0-dev \
         kms-elements-dev \
         kms-filters-dev \
         kurento-media-server-dev
@@ -190,3 +133,5 @@ RUN apt-get update \
 
 USER gitpod
 WORKDIR /workspace/kms-omni-build
+
+ENV MAKEFLAGS="-j$(nproc)"
