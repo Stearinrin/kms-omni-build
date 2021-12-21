@@ -73,8 +73,6 @@ RUN sudo echo "Running 'sudo' for Gitpod: success" && \
 
 RUN git config --global alias.tree "log --graph --pretty=format:'%x09%C(auto) %h %Cgreen %ar %Creset%x09by\"%C(cyan ul)%an%Creset\" %x09%C(auto)%s %d'"
 
-RUN echo "ws full starts"
-
 ### Install C/C++ compiler and associated tools ###
 LABEL dazzle/layer=lang-c
 LABEL dazzle/test=tests/lang-c.yaml
