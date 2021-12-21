@@ -19,6 +19,8 @@ tasks:
       git submodule update --init --recursive && git submodule update --remote 
       git checkout "$REF" || true
       git submodule foreach "git checkout $REF || true"
+  - name: Use Secure WebSocket (self-signed)
+    before: cp kurento-media-server/test/testCertificate.pem build-Debug/config/cert+key.pem
   - name: Build & Run
     command: ./bin/kms-build-run.sh --dbg
 ports:
