@@ -27,7 +27,7 @@
 	path = kms-filters
 	
 [submodule "kurento-media-server"]
-	url = https://github.com/Kurento/kurento-media-server
+	url = https://github.com/Stearinrin/kurento-media-server
 	path = kurento-media-server
 	
 [submodule "module/kms-chroma"]

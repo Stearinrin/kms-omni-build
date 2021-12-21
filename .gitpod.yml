@@ -19,7 +19,3 @@ tasks:
     before: git checkout "$REF" || true
   - before:  git submodule foreach "git checkout $REF || true"
   - command: sudo ./bin/kms-build-run.sh --dbg
-ports:
-  - port: 8433
-    onOpen: open-preview
-  - port: 8888
