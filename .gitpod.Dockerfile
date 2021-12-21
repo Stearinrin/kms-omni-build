@@ -29,6 +29,7 @@ RUN apt-get install -yq --no-install-recommends \
         ca-certificates \
         gnupg \
         jq \
+        git \
         less \
         locales \
         man-db \
@@ -51,9 +52,6 @@ RUN apt-get clean -y
 ENV LANG=en_US.UTF-8
 
 ### Git ###
-RUN add-apt-repository -y ppa:git-core/ppa \
-    && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-    && apt-get install -yq --no-install-recommends git git-lfs
 
 ### Gitpod user ###
 # '-l': see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
@@ -73,8 +71,7 @@ RUN sudo echo "Running 'sudo' for Gitpod: success" && \
     mkdir -p /home/gitpod/.bashrc.d && \
     (echo; echo "for i in \$(ls -A \$HOME/.bashrc.d/); do source \$HOME/.bashrc.d/\$i; done"; echo) >> /home/gitpod/.bashrc
 
-# configure git-lfs
-RUN sudo git lfs install --system
+RUN git config --global alias.tree "log --graph --pretty=format:'%x09%C(auto) %h %Cgreen %ar %Creset%x09by\"%C(cyan ul)%an%Creset\" %x09%C(auto)%s %d'"
 
 RUN echo "ws full starts"
 
