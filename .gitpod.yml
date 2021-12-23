@@ -19,11 +19,18 @@ tasks:
       git submodule update --init --recursive && git submodule update --remote 
       git checkout "$REF" || true
       git submodule foreach "git checkout $REF || true"
-  - name: Use Secure WebSocket (self-signed)
-    before: cp kurento-media-server/test/testCertificate.pem build-Debug/config/cert+key.pem
-  - name: Build & Run
-    command: ./bin/kms-build-run.sh --dbg
+  - name: Build
+    command: ./bin/kms-build-run.sh --build-only
+  # - name: Use Secure WebSocket (self-signed)
+  #   command: |
+  #     cp kurento-media-server/test/testCertificate.pem build-Debug/config/cert+key.pem
+  #     sed -i -E 's/\/\/(port|certificate)/\1/g' ./build-Debug/config/kurento.conf.json
+  - name: Run
+    command: ./bin/kms-build-run.sh
 ports:
   # WebSocket (ws:// & wss://)
   - port: 8888
-  - port: 8433
+  # Only supports HTTP
+  # https://www.gitpod.io/docs/config-ports
+  # - port: 8433
+  #   onOpen: open-browser
