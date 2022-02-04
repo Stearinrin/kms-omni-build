@@ -15,7 +15,7 @@
 	path = kms-jsonrpc
 	
 [submodule "kms-core"]
-	url = https://github.com/Kurento/kms-core
+	url = https://github.com/Stearinrin/kms-core
 	path = kms-core
 	
 [submodule "kms-elements"]
